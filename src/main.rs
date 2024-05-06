@@ -43,7 +43,13 @@ enum Opt {
         #[structopt(long)]
         peer_id: PeerId,
         /// Network of the peer.
-        #[structopt(long, possible_values = &Network::variants(), case_insensitive = true)]
+        #[structopt(
+        long,
+        possible_values = &Network::variants(),
+        case_insensitive = true,
+        //default_value = &Network::protocol(&Network::Ipfs).unwrap(),
+        default_value = &"ipfs",
+        )]
         network: Network,
     },
 }
@@ -391,7 +397,7 @@ struct LookupBehaviour {
 }
 
 arg_enum! {
-    #[derive(Debug, Clone)]
+    #[derive(Debug, Clone,Copy)]
     enum Network {
         Kusama,
         Polkadot,
