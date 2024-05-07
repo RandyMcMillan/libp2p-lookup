@@ -43,7 +43,13 @@ enum Opt {
         #[structopt(long)]
         peer_id: PeerId,
         /// Network of the peer.
-        #[structopt(long, possible_values = &Network::variants(), case_insensitive = true)]
+        #[structopt(
+        long,
+        possible_values = &Network::variants(),
+        case_insensitive = true,
+        //default_value = &Network::protocol(&Network::Ipfs).unwrap(),
+        default_value = &"ipfs",
+        )]
         network: Network,
     },
 }
@@ -69,8 +75,9 @@ async fn main() {
 
     match timed_lookup.await {
         Ok(Ok(peer)) => {
-            println!("Lookup for peer with id {:?} succeeded.", peer.peer_id);
-            println!("\n{peer}");
+            //println!("Lookup for peer with id {:?} succeeded.", peer.peer_id);
+            //println!("\n{peer}");
+            print!("{peer}");
         }
         Ok(Err(e)) | Err(e) => {
             log::error!("Lookup failed: {e:?}.");
@@ -106,6 +113,7 @@ struct Peer {
 
 impl std::fmt::Display for Peer {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        print_key_value("PeerId", self.peer_id.clone(), f)?;
         print_key_value("Protocol version", self.protocol_version.clone(), f)?;
         print_key_value("Agent version", self.agent_version.clone(), f)?;
         print_key_value("Observed address", self.observed_addr.clone(), f)?;
@@ -132,7 +140,7 @@ impl LookupClient {
         let local_key = Keypair::generate_ed25519();
         let local_peer_id = PeerId::from(local_key.public());
 
-        println!("Local peer id: {local_peer_id}");
+        //println!("Local peer id: {local_peer_id}");
 
         let (relay_transport, relay_client) = relay::client::new(local_peer_id);
 
@@ -391,7 +399,7 @@ struct LookupBehaviour {
 }
 
 arg_enum! {
-    #[derive(Debug, Clone)]
+    #[derive(Debug, Clone,Copy)]
     enum Network {
         Kusama,
         Polkadot,
