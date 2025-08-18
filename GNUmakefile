@@ -85,9 +85,9 @@ export GITHUB_TOKEN
 
 export $(cat ~/GITHUB_TOKEN) && make act
 
-PYTHON                                  := $(shell which python)
+PYTHON                                  := $(shell which python || >/dev/null)
 export PYTHON
-PYTHON2                                 := $(shell which python2)
+PYTHON2                                 := $(shell which python2 || 2>/dev/null)
 export PYTHON2
 PYTHON3                                 := $(shell which python3)
 export PYTHON3
@@ -99,8 +99,8 @@ export PIP2
 PIP3                                    := $(shell which pip3)
 export PIP3
 
-PYTHON_VENV                             := $(shell python -c "import sys; sys.stdout.write('1') if hasattr(sys, 'base_prefix') else sys.stdout.write('0')")
-PYTHON3_VENV                            := $(shell python3 -c "import sys; sys.stdout.write('1') if hasattr(sys, 'real_prefix') else sys.stdout.write('0')")
+##PYTHON_VENV                             := $(shell python -c "import sys; sys.stdout.write('1') if hasattr(sys, 'base_prefix') else sys.stdout.write('0')" || >/dev/null)
+PYTHON3_VENV                            := $(shell python3 -c "import sys; sys.stdout.write('1') if hasattr(sys, 'real_prefix') else sys.stdout.write('0')" || 2>/dev/null)
 
 python_version_full                     := $(wordlist 2,4,$(subst ., ,$(shell python3 --version 2>&1)))
 python_version_major                    := $(word 1,${python_version_full})
